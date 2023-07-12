@@ -28,7 +28,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
-    boot: ["i18n", "axios"],
+    boot: ["i18n", "axios","firebaseConnection"],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ["app.scss"],
@@ -70,6 +70,12 @@ module.exports = configure(function (/* ctx */) {
       // analyze: true,
       env: {
         APP_NAME: "Quasar App",
+        FIREBASE_API_KEY: "AIzaSyDSDjGGsKBPcxwlJhL8-G_Km5QWHeVhlTg",
+        FIREBASE_AUTH_DOMAIN: "ghitap-ken-quasar.firebaseapp.com",
+        FIREBASE_PROJECT_ID: "ghitap-ken-quasar",
+        FIREBASE_STORAGE_BUCKET: "ghitap-ken-quasar.appspot.com",
+        FIREBASE_MESSAGING_SENDER_ID: "1059398194775",
+        FIREBASE_APP_ID: "1:1059398194775:web:2e4a5a2ee67340d368f512"
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
