@@ -9,6 +9,11 @@ import {
 } from "utils/validators";
 import { createInputFields, createTableColumns } from "models/functions";
 import { emailValidator } from "src/utils/validators";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "boot/firebaseConnection";
+import { doc, deleteDoc } from "firebase/firestore";
+import { setDoc } from "firebase/firestore";
+import { addDoc } from "firebase/firestore"
 
 const model = [
   {
@@ -100,59 +105,37 @@ const model = [
 export const createFields = (overrides = []) => createInputFields(model, overrides);
 
 export const createColumns = () => createTableColumns(model);
+export const getPatients = async () => {
 
-export const getPatients = () => {
-  return new Promise((resolve) => {
-    setTimeout(function () {
-      resolve(JSON.parse(localStorage.getItem("patients") || "[]"));
-    }, 1000);
+  const querySnapshot = await getDocs(collection(db, "patients"));
+
+  let data = []
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    // console.log(doc.id, " => ", doc.data());
+      data.push({
+       id: doc.id,
+        ...doc.data()
+      })
   });
+
+  return data
 };
 
-export const createPatient = (data) => {
-  return new Promise((resolve) => {
-    setTimeout(async () => {
-      let patients = await getPatients();
-      data.id = patients.length + 1;
-      patients.push(data);
-      localStorage.setItem("patients", JSON.stringify(patients));
-      resolve(data);
-    }, 1000);
-  });
+export const createPatient = async (data) => {
+  const docRef = await addDoc(collection(db, "patients"), data);
+
+  return docRef.id
 };
 
-export const updatePatient = (id, data) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(async () => {
-      let patients = await getPatients();
+export const updatePatient = async (id, data) => {
+  await setDoc(doc(db, "patients", id), data);
 
-      let index = patients.findIndex((patient) => patient.id === id);
-      if (index === -1) {
-        reject("Patient not found");
-        return;
-      }
-
-      patients[index] = { ...patients[index], ...data };
-      localStorage.setItem("patients", JSON.stringify(patients));
-      resolve(patients[index]);
-    }, 1000);
-  });
+  return id
 };
 
-export const deletePatient = (id) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(async () => {
-      let patients = await getPatients();
+export const deletePatient = async (id, data) => {
+  await deleteDoc(doc(db, "patients", id));
 
-      let index = patients.findIndex((patient) => patient.id === id);
-      if (index === -1) {
-        reject("Patient not found");
-        return;
-      }
-
-      patients.splice(index, 1);
-      localStorage.setItem("patients", JSON.stringify(patients));
-      resolve(patients[index]);
-    }, 1000);
-  });
+  return id
 };

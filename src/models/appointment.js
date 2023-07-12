@@ -2,6 +2,8 @@ import CustomInput from "components/CustomInput.vue";
 import CustomSelect from "components/CustomSelect.vue";
 import { requiredValidator, dateValidator } from "utils/validators";
 import { createInputFields, createTableColumns } from "models/functions";
+import { collection, getDocs, addDoc, setDoc, deleteDoc, doc } from "firebase/firestore"
+import { db } from "src/boot/firebaseConnection"
 
 const model = [
   {
@@ -47,62 +49,83 @@ export const createFields = (overrides = []) => createInputFields(model, overrid
 
 export const createColumns = () => createTableColumns(model);
 
-export const getAppointments = () => {
-  return new Promise((resolve) => {
-    setTimeout(function () {
-      resolve(JSON.parse(localStorage.getItem("appointments") || "[]"));
-    }, 1000);
+export const getAppointments = async () => {
+  // return new Promise((resolve) => {
+  //   setTimeout(function () {
+  //     resolve(JSON.parse(localStorage.getItem("appointments") || "[]"));
+  //   }, 1000);
+  // });
+
+  const querySnapshot = await getDocs(collection(db, "appointments"));
+
+  let appointments = [];
+  querySnapshot.forEach((doc) => {
+    appointments.push({ ...doc.data(), id: doc.id });
   });
+
+  return appointments;
 };
 
-export const createAppointment = (data) => {
-  return new Promise((resolve) => {
-    setTimeout(async () => {
-      let appointments = await getAppointments();
-      data.id = appointments.length + 1;
-      appointments.push(data);
-      localStorage.setItem("appointments", JSON.stringify(appointments));
-      resolve(data);
-    }, 1000);
-  });
+export const createAppointment = async (data) => {
+  // return new Promise((resolve) => {
+  //   setTimeout(async () => {
+  //     let appointments = await getAppointments();
+  //     data.id = appointments.length + 1;
+  //     appointments.push(data);
+  //     localStorage.setItem("appointments", JSON.stringify(appointments));
+  //     resolve(data);
+  //   }, 1000);
+  // });
+
+  const docRef = await addDoc(collection(db, "appointments"), data);
+
+  return docRef.id
 };
 
-export const updateAppointment = (id, data) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(async () => {
-      let appointments = await getAppointments();
+export const updateAppointment = async (id, data) => {
+  // return new Promise((resolve, reject) => {
+  //   setTimeout(async () => {
+  //     let appointments = await getAppointments();
 
-      let index = appointments.findIndex(
-        (appointment) => appointment.id === id
-      );
-      if (index === -1) {
-        reject("Appointment not found");
-        return;
-      }
+  //     let index = appointments.findIndex(
+  //       (appointment) => appointment.id === id
+  //     );
+  //     if (index === -1) {
+  //       reject("Appointment not found");
+  //       return;
+  //     }
 
-      appointments[index] = { ...appointments[index], ...data };
-      localStorage.setItem("appointments", JSON.stringify(appointments));
-      resolve(appointments[index]);
-    }, 1000);
-  });
+  //     appointments[index] = { ...appointments[index], ...data };
+  //     localStorage.setItem("appointments", JSON.stringify(appointments));
+  //     resolve(appointments[index]);
+  //   }, 1000);
+  // });
+
+  await setDoc(doc(db, "appointments", id), data);
+
+  return id
 };
 
-export const deleteAppointment = (id) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(async () => {
-      let appointments = await getAppointments();
+export const deleteAppointment = async (id) => {
+  // return new Promise((resolve, reject) => {
+  //   setTimeout(async () => {
+  //     let appointments = await getAppointments();
 
-      let index = appointments.findIndex(
-        (appointment) => appointment.id === id
-      );
-      if (index === -1) {
-        reject("Appointment not found");
-        return;
-      }
+  //     let index = appointments.findIndex(
+  //       (appointment) => appointment.id === id
+  //     );
+  //     if (index === -1) {
+  //       reject("Appointment not found");
+  //       return;
+  //     }
 
-      appointments.splice(index, 1);
-      localStorage.setItem("appointments", JSON.stringify(appointments));
-      resolve(appointments[index]);
-    }, 1000);
-  });
+  //     appointments.splice(index, 1);
+  //     localStorage.setItem("appointments", JSON.stringify(appointments));
+  //     resolve(appointments[index]);
+  //   }, 1000);
+  // });
+
+  await deleteDoc(doc(db, "appointments", id));
+
+  return id
 };
