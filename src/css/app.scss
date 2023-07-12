@@ -1,0 +1,77 @@
+// app global css in SCSS form
+body {
+  font-family: Montserrat, Roboto, -apple-system, Avenir, BlinkMacSystemFont,
+    Segoe UI, Helvetica, Arial, sans-serif;
+}
+
+.doc-header {
+  transition: none;
+}
+
+.doc-header__primary {
+  height: 72px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.doc-header__secondary {
+  height: 55px;
+}
+
+.doc-brand {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.doc-brand,
+.doc-header-menu {
+  font-family: Montserrat, Roboto, -apple-system, Avenir, BlinkMacSystemFont,
+    Segoe UI, Helvetica, Arial, sans-serif;
+  font-weight: 500;
+}
+
+body.body--dark .header-toolbar {
+  color: #929397;
+  background: #050a14;
+}
+
+body.body--dark .doc-technical {
+  color: #cbcbcb;
+  background: #080e1a;
+}
+
+.header-toolbar,
+.header-tabs,
+.header-tabs .q-tab {
+  min-height: 40px;
+  transition: color 0.6s cubic-bezier(0.25, 0.8, 0.5, 1);
+}
+
+.header-toolbar {
+  color: #757575;
+  background: #fff;
+}
+
+.items-center,
+.flex-center {
+  align-items: center;
+}
+
+.text-size-14 {
+  font-size: 14px !important;
+}
+
+.text-size-16 {
+  font-size: 16px !important;
+}
+
+.letter-spacing-100 {
+  letter-spacing: 1px !important;
+}
+
+.letter-spacing-300 {
+  letter-spacing: 3px !important;
+}
+
+.doc-header__links {
+  justify-content: end;
+}
