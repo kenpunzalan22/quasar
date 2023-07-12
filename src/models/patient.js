@@ -1,5 +1,6 @@
 import CustomInput from "components/CustomInput.vue";
 import CustomSelect from "components/CustomSelect.vue";
+import SearchPatientComponent from "components/SearchPatient.vue";
 import {
   requiredValidator,
   phoneValidator,
@@ -9,13 +10,26 @@ import {
 } from "utils/validators";
 import { createInputFields, createTableColumns } from "models/functions";
 import { emailValidator } from "src/utils/validators";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "boot/firebaseConnection";
-import { doc, deleteDoc } from "firebase/firestore";
-import { setDoc } from "firebase/firestore";
-import { addDoc } from "firebase/firestore"
+import {
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  deleteDoc,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "src/boot/firebaseConnection";
+import { api } from "boot/axios"
 
 const model = [
+  {
+    component: SearchPatientComponent,
+    model: "hospital_number",
+    attrs: {
+      label: "Hospital Number",
+    },
+    col: 6,
+  },
   {
     component: CustomInput,
     model: "last_name",
@@ -102,40 +116,104 @@ const model = [
   },
 ];
 
-export const createFields = (overrides = []) => createInputFields(model, overrides);
+export const createFields = (overrides = []) =>
+  createInputFields(model, overrides);
 
 export const createColumns = () => createTableColumns(model);
+
 export const getPatients = async () => {
+  // return new Promise((resolve) => {
+  //   setTimeout(function () {
+  //     resolve(JSON.parse(localStorage.getItem("patients") || "[]"));
+  //   }, 1000);
+  // });
 
   const querySnapshot = await getDocs(collection(db, "patients"));
 
-  let data = []
+  let patients = [];
   querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    // console.log(doc.id, " => ", doc.data());
-      data.push({
-       id: doc.id,
-        ...doc.data()
-      })
+    patients.push({ ...doc.data(), id: doc.id });
   });
 
-  return data
+  return patients;
 };
 
 export const createPatient = async (data) => {
+  // return new Promise((resolve) => {
+  //   setTimeout(async () => {
+  //     let patients = await getPatients();
+  //     data.id = patients.length + 1;
+  //     patients.push(data);
+  //     localStorage.setItem("patients", JSON.stringify(patients));
+  //     resolve(data);
+  //   }, 1000);
+  // });
+
   const docRef = await addDoc(collection(db, "patients"), data);
 
-  return docRef.id
+  return docRef.id;
 };
 
 export const updatePatient = async (id, data) => {
+  // return new Promise((resolve, reject) => {
+  //   setTimeout(async () => {
+  //     let patients = await getPatients();
+
+  //     let index = patients.findIndex((patient) => patient.id === id);
+  //     if (index === -1) {
+  //       reject("Patient not found");
+  //       return;
+  //     }
+
+  //     patients[index] = { ...patients[index], ...data };
+  //     localStorage.setItem("patients", JSON.stringify(patients));
+  //     resolve(patients[index]);
+  //   }, 1000);
+  // });
+
   await setDoc(doc(db, "patients", id), data);
 
   return id
 };
 
-export const deletePatient = async (id, data) => {
+export const deletePatient = async (id) => {
+  // return new Promise((resolve, reject) => {
+  //   setTimeout(async () => {
+  //     let patients = await getPatients();
+
+  //     let index = patients.findIndex((patient) => patient.id === id);
+  //     if (index === -1) {
+  //       reject("Patient not found");
+  //       return;
+  //     }
+
+  //     patients.splice(index, 1);
+  //     localStorage.setItem("patients", JSON.stringify(patients));
+  //     resolve(patients[index]);
+  //   }, 1000);
+  // });
+
   await deleteDoc(doc(db, "patients", id));
 
   return id
 };
+
+export const searchPatient = async (lastName = null, firstName = null, middleName = null) => {
+  const query = {}
+
+  if (lastName && lastName.length > 0) {
+    query.patlast = lastName
+  }
+
+  if (firstName && firstName.length > 0) {
+    query.patfirst = firstName
+  }
+
+  if (middleName && middleName.length > 0) {
+    query.patmiddle = middleName
+  }
+
+  const response = await api.get("/api/patients?" + Object.entries(query).map(([key, val]) => `${key}=${val}`).join('&'))
+
+  return response.data.data
+}
