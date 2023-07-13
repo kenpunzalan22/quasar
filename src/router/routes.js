@@ -1,5 +1,17 @@
 export default [
   {
+    path: "/",
+    redirect: to => {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (user) {
+        return { name: "patients" };
+      } else {
+        return { name: "login" };
+      }
+    }
+  },
+  {
     path: "/guest",
     component: () => import("layouts/GuestLayout.vue"),
     children: [

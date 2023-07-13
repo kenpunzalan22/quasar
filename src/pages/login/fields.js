@@ -6,9 +6,9 @@ export default (overrides = []) => {
   const fields = [
     {
       component: CustomInput,
-      model: "username",
+      model: "email",
       attrs: {
-        label: "Username",
+        label: "Email",
         rules: [requiredValidator],
       },
       col: 12,
@@ -19,6 +19,7 @@ export default (overrides = []) => {
       attrs: {
         label: "Password",
         rules: [requiredValidator],
+        type: 'password',
       },
       col: 12,
     },

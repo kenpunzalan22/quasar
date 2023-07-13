@@ -111,7 +111,7 @@ const model = [
     model: "email",
     attrs: {
       label: "Email Address",
-      rules: [emailValidator],
+      rules: [requiredValidator, emailValidator],
     },
     col: 6,
   },

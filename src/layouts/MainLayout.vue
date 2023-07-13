@@ -3,7 +3,10 @@ import { computed } from "vue";
 import routes from "src/router/routes";
 import MainHeader from "components/MainHeader.vue";
 import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
+import { logout } from "src/services/auth";
 
+const $q = useQuasar();
 const router = useRouter();
 
 const tabs = computed(() =>
@@ -16,6 +19,24 @@ const tabs = computed(() =>
       to: r.path,
     }))
 );
+
+const attemptLogout = () => {
+  $q.loading.show();
+  logout()
+    .then(() => {
+      localStorage.removeItem("user");
+      router.push({ name: "login" });
+    })
+    .catch((error) => {
+      $q.notify({
+        color: "negative",
+        message: "Logout failed.",
+      });
+    })
+    .finally(() => {
+      $q.loading.hide();
+    });
+};
 </script>
 
 <template>
@@ -52,7 +73,7 @@ const tabs = computed(() =>
             min-height: 0;
             font-weight: 700;
           "
-          @click="router.push({ name: 'login' })"
+          @click="attemptLogout"
         >
           Logout
         </q-btn>
