@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { createFields, createAppointment } from "models/appointment";
+import { getServices } from "models/service";
 import { useQuasar } from "quasar";
 import FormBuilder from "components/FormBuilder.vue";
 
@@ -9,15 +10,12 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  services: {
-    type: Array,
-    default: () => [],
-  },
 });
 
 const $q = useQuasar();
 const dialog = ref(false);
 const appointment = ref({});
+const services = ref([]);
 
 const fields = computed(() => {
   const fields = createFields([
@@ -36,7 +34,7 @@ const fields = computed(() => {
     {
       model: "service_id",
       attrs: {
-        options: props.services,
+        options: services.value,
       },
     },
   ]);
@@ -49,12 +47,18 @@ const openDialog = () => {
   dialog.value = true;
 };
 
+onMounted(async () => {
+  services.value = await getServices().then((ser) =>
+    ser.map((s) => ({ label: s.name, value: s.code }))
+  );
+});
+
 const submit = () => {
   $q.loading.show();
   createAppointment({
     ...appointment.value,
     patient: props.patient,
-    service: props.services.find(
+    service: services.value.find(
       (s) => s.value === appointment.value.service_id
     ),
   }).then(() => {
@@ -75,7 +79,6 @@ const submit = () => {
     size="sm"
     color="primary"
     icon="calendar_month"
-    :disable="!props.patient.hospital_number"
     @click="openDialog"
   />
 

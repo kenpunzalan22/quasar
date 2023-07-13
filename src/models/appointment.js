@@ -43,23 +43,6 @@ const model = [
     col: 12,
     field: (row) => row.service.label,
   },
-  {
-    component: CustomSelect,
-    model: "type",
-    attrs: {
-      label: "Type",
-      rules: [requiredValidator],
-      emitValue: true,
-      mapOptions: true,
-      options: [
-        { label: "Online", value: "T" },
-        { label: "Face to Face", value: "R" },
-      ],
-    },
-    col: 12,
-    field: (row) => row.type,
-    format: (val) => (val === "T" ? "Online" : "Face to Face"),
-  },
 ];
 
 export const createFields = (overrides = []) => createInputFields(model, overrides);

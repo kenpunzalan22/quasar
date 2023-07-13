@@ -49,7 +49,6 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
-
       target: {
         browser: ["es2019", "edge88", "firefox78", "chrome87", "safari13.1"],
         node: "node16",
@@ -69,17 +68,16 @@ module.exports = configure(function (/* ctx */) {
 
       publicPath: '/app/',
       // analyze: true,
-      env: require('dotenv').config().parsed,
-      // env: {
-      //  APP_NAME: "Quasar App",
-      //  FIREBASE_API_KEY: "AIzaSyDSDjGGsKBPcxwlJhL8-G_Km5QWHeVhlTg",
-      //  FIREBASE_AUTH_DOMAIN: "ghitap-ken-quasar.firebaseapp.com",
-      // FIREBASE_PROJECT_ID: "ghitap-ken-quasar",
-      //  FIREBASE_STORAGE_BUCKET: "ghitap-ken-quasar.appspot.com",
-      //  FIREBASE_MESSAGING_SENDER_ID: "1059398194775",
-      //  FIREBASE_APP_ID: "1:1059398194775:web:2e4a5a2ee67340d368f512",
-      //  API_URL: "http://localhost:8000"
-      //},
+      env: {
+        APP_NAME: "Quasar App",
+        FIREBASE_API_KEY: "AIzaSyDSDjGGsKBPcxwlJhL8-G_Km5QWHeVhlTg",
+        FIREBASE_AUTH_DOMAIN: "ghitap-ken-quasar.firebaseapp.com",
+        FIREBASE_PROJECT_ID: "ghitap-ken-quasar",
+        FIREBASE_STORAGE_BUCKET: "ghitap-ken-quasar.appspot.com",
+        FIREBASE_MESSAGING_SENDER_ID: "1059398194775",
+        FIREBASE_APP_ID: "1:1059398194775:web:2e4a5a2ee67340d368f512",
+        API_URL: "http://localhost:8000"
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -233,8 +231,5 @@ module.exports = configure(function (/* ctx */) {
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
     },
-
   };
 });
-
-

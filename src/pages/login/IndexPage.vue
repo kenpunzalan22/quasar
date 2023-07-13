@@ -3,28 +3,11 @@ import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import FormBuilder from "components/FormBuilder.vue";
 import createFields from "./fields.js";
-import { login } from "src/services/auth";
-import { useQuasar } from "quasar";
 
-const $q = useQuasar();
 const router = useRouter();
 
 const onSubmit = () => {
-  $q.loading.show();
-  login(form.value)
-    .then((user) => {
-      localStorage.setItem("user", JSON.stringify(user));
-      router.push("/");
-    })
-    .catch((error) => {
-      $q.notify({
-        color: "negative",
-        message: "Login failed.",
-      });
-    })
-    .finally(() => {
-      $q.loading.hide();
-    });
+  router.push({ name: "patients" });
 };
 
 const fields = computed(() => createFields());

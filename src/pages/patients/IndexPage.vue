@@ -5,7 +5,6 @@ import AddEditDialog from "pages/patients/AddEditDialog.vue";
 import DeletePatient from "./DeletePatient.vue";
 import CreateAppointment from "./CreateAppointment.vue";
 import ViewChats from "./ViewChats.vue";
-import { getServices } from "models/service";
 
 const rows = ref([]);
 const columns = computed(() => createColumns());
@@ -13,8 +12,6 @@ const columns = computed(() => createColumns());
 const dialog = ref(false);
 const selectedPatient = ref({});
 const loading = ref(false);
-
-const services = ref([]);
 
 const fetchItems = () => {
   loading.value = true;
@@ -29,13 +26,7 @@ const selectItem = (item) => {
   dialog.value = true;
 };
 
-onMounted(() => {
-  fetchItems();
-  getServices().then(
-    (ser) =>
-      (services.value = ser.map((s) => ({ label: s.name, value: s.code })))
-  );
-});
+onMounted(() => fetchItems());
 
 watch(dialog, (value) => {
   if (!value) {
@@ -51,14 +42,14 @@ watch(dialog, (value) => {
       <q-toolbar flat>
         <q-toolbar-title> Patients </q-toolbar-title>
 
-        <!-- <q-btn
+        <q-btn
           flat
           round
           dense
           icon="add"
           color="primary"
           @click="dialog = true"
-        /> -->
+        />
       </q-toolbar>
       <q-separator />
 
@@ -81,7 +72,7 @@ watch(dialog, (value) => {
             <q-td align="center">
               <ViewChats :patient="props.row" />
 
-              <CreateAppointment :services="services" :patient="props.row" />
+              <CreateAppointment :patient="props.row" />
 
               <q-btn
                 round
