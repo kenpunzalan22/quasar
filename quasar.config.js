@@ -66,18 +66,10 @@ module.exports = configure(function (/* ctx */) {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      publicPath: '/app/',
+      //publicPath: '/app/',
       // analyze: true,
-      env: {
-        APP_NAME: "Quasar App",
-        FIREBASE_API_KEY: "AIzaSyDSDjGGsKBPcxwlJhL8-G_Km5QWHeVhlTg",
-        FIREBASE_AUTH_DOMAIN: "ghitap-ken-quasar.firebaseapp.com",
-        FIREBASE_PROJECT_ID: "ghitap-ken-quasar",
-        FIREBASE_STORAGE_BUCKET: "ghitap-ken-quasar.appspot.com",
-        FIREBASE_MESSAGING_SENDER_ID: "1059398194775",
-        FIREBASE_APP_ID: "1:1059398194775:web:2e4a5a2ee67340d368f512",
-        API_URL: "http://localhost:8000"
-      },
+      env: require('dotenv').config().parsed,
+
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -109,7 +101,6 @@ module.exports = configure(function (/* ctx */) {
         // proxy all requests starting with /api to jsonplaceholder
         '/api': {
           target: 'http://some.api.target.com:7070',
-          //target: "http://localhost:8000,"
           changeOrigin: true,
           pathRewrite: {
             '^/api': ''

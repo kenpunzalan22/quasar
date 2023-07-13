@@ -6,6 +6,8 @@ import {
   createWebHashHistory,
 } from "vue-router";
 import routes from "./routes";
+import { checkHospitalUser } from 'src/services/auth'
+import middlewarePipeline from "./middlewarePipeline";
 
 /*
  * If not building with SSR mode, you can
@@ -20,8 +22,8 @@ export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === "history"
-    ? createWebHistory
-    : createWebHashHistory;
+      ? createWebHistory
+      : createWebHashHistory;
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
@@ -32,6 +34,22 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
+
+  Router.beforeEach((to, from, next) => {
+    checkHospitalUser()
+
+    const middleware = to.meta.middleware;
+    const context = { to, from, next };
+
+    if (!middleware) {
+      return next();
+    }
+
+    middleware[0]({
+      ...context,
+      next: middlewarePipeline(context, middleware, 1),
+    });
+  })
 
   return Router;
 });

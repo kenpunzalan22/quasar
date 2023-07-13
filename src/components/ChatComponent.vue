@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const props = defineProps({
   name: {
@@ -13,6 +13,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["send"]);
+
+const user = computed(() => JSON.parse(localStorage.getItem("user")))
 
 const message = ref("");
 
@@ -55,7 +57,7 @@ const sendMessage = () => {
           v-for="message in props.messages"
           :key="message.id"
           :text="[message.text]"
-          :sent="message.sender_id === 1234"
+          :sent="message.sender_id === user.uid"
         />
       </div>
     </div>
