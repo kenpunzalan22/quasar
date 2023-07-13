@@ -29,6 +29,7 @@ const model = [
       label: "Hospital Number",
     },
     col: 6,
+    authOnly: true,
   },
   {
     component: CustomInput,
